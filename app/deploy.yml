@@ -1,0 +1,82 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  name: x-VERSION
+  namespace: JAVA_-ENV_NAME
+  labels:
+    app: 
+    version: BUILD_VERSION
+    islive: "true"
+    feature: BRANCH_NAME
+    datetime: "DATE-TIME"
+spec:
+  replicas: 1
+  template:
+    metadata:
+      labels:
+        app: xxx
+        version: BUILD_VERSION
+        islive: "true"
+        feature: BRANCH_NAME
+        datetime: "DATE-TIME"
+    spec:
+      containers:
+        - image: xxxx
+          name: x-springboot
+          command: ["/bin/sh"]
+          args: [xxxxxx]
+          readinessProbe:
+            httpGet:
+              path: /x-health
+              port: 8080
+            initialDelaySeconds: 60
+            periodSeconds: 30
+            successThreshold: 1
+          livenessProbe:
+            httpGet:
+              path: /x-health
+              port: 8080
+            initialDelaySeconds: 180
+            periodSeconds: 30
+            timeoutSeconds: 3
+          env:
+          - name: CREDENTIALS_PATH
+            value: /config/secret
+          - name: ENVIRONMENT_CONFIG_PATH
+            value: /config/environment
+          - name: APPLICATION_CONFIG_PATH
+            value: /config/application
+          - name: HYBRID_HOME
+            value: /mobile/ui/
+          volumeMounts:
+          - mountPath: /config/secret/
+            name: secret-volume
+          - mountPath: /config/environment/
+            name: env-volume
+          - mountPath: /config/application/
+            name: app-volume
+          - mountPath: 
+            name: nd-volume
+          ports:
+          - containerPort: 8080
+            name: 
+          resources:
+             limits:
+              cpu: 2500m
+              memory: 4250Mi
+             requests:
+              cpu: 2500m
+              memory: 4250Mi
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: secret-BUILD-VERSION
+      - name: env-volume
+        configMap:
+          name: env-config-BUILD-VERSION
+      - name: app-volume
+        configMap:
+          name: app-config-BUILD-VERSION
+      - name: nd-volume
+        configMap:
+          name: cmon-config-BUILD-VERSION
